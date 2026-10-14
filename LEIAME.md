@@ -4,6 +4,7 @@
 | Agente | Modelo | Quando roda | Edita? |
 |---|---|---|---|
 | `/spec` (comando) | o da sessão | Quando a demanda chega como ideia. Entrevista o humano. Na primeira vez em um repo, faz a entrevista inicial do projeto. | `specs/DECISOES.md` |
+| `/autonomo` (comando) | o da sessão | Quando o humano quer passar o trabalho e só ver pronto. Os agentes estudam o pedido, a sessão pergunta TODAS as decisões do humano numa rodada só no começo e depois o time vai até o critério de pronto sem perguntar. | `specs/MANDATO.md`, `REGISTRO.md`, `PENDENTES.md` |
 | `explorador` | haiku | Passo 0, sempre. Mapeia a área da demanda para o refinador. | não |
 | `refinador-tecnico` | opus | Escreve a spec fechada em `specs/<nome>.md` e registra decisões globais em `DECISOES.md`. | só `specs/` |
 | `arquiteto` | opus | Revisa a spec, antes do código. | não |
@@ -18,6 +19,7 @@
 ```
 global/agents/         agentes, vão para ~/.claude/agents/
 global/skills/spec/    comando /spec, vai para ~/.claude/skills/spec/
+global/skills/autonomo/ comando /autonomo e os modelos de MANDATO, REGISTRO e PENDENTES
 repo/CLAUDE.md         fluxo e regras, vai para a raiz de cada repositório
 repo/specs/DECISOES.md ledger de decisões do projeto, vai para cada repositório
 instalar-global.*      instala agentes, comando e MCP do Playwright (uma vez por máquina)
@@ -36,6 +38,15 @@ Os agentes são globais, mas o CLAUDE.md é por repositório de propósito: assi
 "/spec quero que o cliente consiga salvar carrinho para depois" (ele vai perguntar antes de escrever).
 "Use o explorador e depois o refinador-tecnico para a issue #123, e siga o fluxo do CLAUDE.md."
 "Use o investigador-de-falhas para o alerta X (log em anexo)."
+"/autonomo quero um app de agendamento para barbearias" (ele estuda, pergunta tudo de uma vez, e depois só volta com o trabalho pronto).
+
+## Modo autônomo (/autonomo)
+1. Varredura: explorador, refinador-tecnico (rascunho com as perguntas abertas), arquiteto e, se houver login, pagamento ou dado pessoal, seguranca. Com o Lore conectado, lê também a memória do grupo e do projeto e busca o que outros projetos já decidiram.
+2. Uma rodada de perguntas: tudo o que é do humano (negócio, escopo, nome público, gasto, contas, produção, o que é difícil de desfazer), mais critério de pronto, fora do escopo, git, limites e quem avisar. As escolhas técnicas óbvias aparecem como lista para vetar.
+3. `specs/MANDATO.md` com as respostas; specs fechadas e aprovadas pelo arquiteto; "Posso soltar o time?".
+4. Execução pelo fluxo do CLAUDE.md, seção "Modo autônomo": pergunta nova vira decisão registrada em `specs/REGISTRO.md`; o que só o humano pode fazer vai para `specs/PENDENTES.md` e o trabalho segue no resto.
+5. Fim quando o critério de pronto estiver verificado (ou só restarem pendências): Resultado no mandato, commit, Lore atualizado e carta para quem o mandato manda avisar.
+Na volta, leia o Resultado do mandato e as entradas do REGISTRO marcadas "Revisar: sim".
 
 ## Plano para esta semana (gastar os tokens aprendendo)
 - Dia 1: cada pessoa escolhe uma issue real, pequena, e roda o fluxo completo.

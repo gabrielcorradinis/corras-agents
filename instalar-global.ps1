@@ -1,18 +1,24 @@
-# Instala os agentes e o comando /spec para todos os projetos desta maquina.
+# Instala os agentes e os comandos /spec e /autonomo para todos os projetos desta maquina.
 # Uso: .\instalar-global.ps1
 $ErrorActionPreference = "Stop"
 $kit = $PSScriptRoot
 $claude = Join-Path $HOME ".claude"
 
 New-Item -ItemType Directory -Force (Join-Path $claude "agents") | Out-Null
-New-Item -ItemType Directory -Force (Join-Path $claude "skills\spec") | Out-Null
+New-Item -ItemType Directory -Force (Join-Path $claude "skills") | Out-Null
 
 Copy-Item (Join-Path $kit "global\agents\*.md") (Join-Path $claude "agents") -Force
-Copy-Item (Join-Path $kit "global\skills\spec\SKILL.md") (Join-Path $claude "skills\spec") -Force
+# cada pasta de global\skills vira um comando (/spec, /autonomo), com os arquivos de apoio dela
+Get-ChildItem (Join-Path $kit "global\skills") -Directory | ForEach-Object {
+    $destino = Join-Path $claude ("skills\" + $_.Name)
+    New-Item -ItemType Directory -Force $destino | Out-Null
+    Copy-Item (Join-Path $_.FullName "*") $destino -Recurse -Force
+}
 
 Write-Host "Agentes instalados em $claude\agents:"
 Get-ChildItem (Join-Path $claude "agents") -Filter *.md | ForEach-Object { Write-Host "  - $($_.BaseName)" }
-Write-Host "Comando /spec instalado em $claude\skills\spec"
+Write-Host "Comandos instalados em $claude\skills:"
+Get-ChildItem (Join-Path $kit "global\skills") -Directory | ForEach-Object { Write-Host "  - /$($_.Name)" }
 
 $mcp = claude mcp list 2>$null | Select-String -Pattern "^playwright"
 if (-not $mcp) {

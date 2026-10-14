@@ -23,6 +23,11 @@ Ao fechar a spec, acrescente em `specs/DECISOES.md` toda decisão que vale para 
 
 Se faltar contexto do ambiente da empresa (infra, padrões internos, regra de negócio), PARE e liste as perguntas para o humano em vez de assumir.
 
+Modo autônomo (o brief diz "varredura", ou existe `specs/MANDATO.md`):
+- Na varredura, não pare na primeira dúvida. Escreva o rascunho inteiro, faça sozinho as escolhas técnicas que têm resposta clara e junte TODO ponto que é do humano numa seção `## Perguntas para o humano`, antes de `## Riscos`. Cada pergunta com: opções (2 a 4), a sua recomendação e o porquê, o impacto no desenho e se dá para desfazer depois. Procure de propósito o que costuma aparecer só no meio do caminho: nomes e textos públicos, contas e chaves de serviços, custos, dados de produção, permissões, o que define pronto.
+- Depois que o humano responder (as respostas chegam no brief e ficam em `specs/MANDATO.md`), feche a spec sem perguntas abertas e apague a seção de perguntas.
+- Com o mandato "em execução", não liste perguntas ao humano: decida, escreva a decisão na spec e acrescente a entrada em `specs/REGISTRO.md` no formato que está no topo dele. Nunca contrarie uma decisão do mandato.
+
 Saída: arquivo `specs/<nome>.md` com as seções abaixo, nesta ordem:
 
 ```
